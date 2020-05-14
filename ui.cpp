@@ -2,6 +2,7 @@
 // Created by Richard Van Camp on 13.5.2020.
 //
 
+#include <string>
 #include "ui.h"
 
 ui::ui() {
@@ -24,13 +25,18 @@ void ui::setup() {
     initscr();
     // remove cursor - doesn't always work
     curs_set(0);
-    // this allows the program to continue loop after 300 ms wait for input
+    // this allows the program to continue loop after 200 ms wait for input
     // alternatives cbreak, nodelay, timeout
-    halfdelay(3);
+    halfdelay(2);
     // don't print out
     noecho();
+    keypad(stdscr, TRUE);
 
     refresh();
+    create_screen();
+}
+
+void ui::create_screen() {
     int side = ACS_NEQUAL;
     int top_bottom = ACS_BLOCK;
     int screen_y_max, screen_x_max;
@@ -67,6 +73,13 @@ void ui::draw_reversed_colors(int x, int y, char c) {
     wattroff(win, A_STANDOUT);
 }
 
+void ui::print(int x, int y, const std::string msg) {
+    int n = msg.length();
+    char chars[n + 1];
+    strcpy(chars, msg.c_str());
+    mvprintw(y, x, chars);
+}
+
 void ui::redraw() {
     wrefresh(win);
 }
@@ -74,6 +87,11 @@ void ui::redraw() {
 int ui::input() {
     int input = getch();
     return input;
+}
+
+void ui::clear_screen() {
+    clear();
+    create_screen();
 }
 
 void ui::tear_down() {

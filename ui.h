@@ -21,7 +21,11 @@ public:
 
     void draw_reversed_colors(int x, int y, char c);
 
+    void print(int x, int y, std::string);
+
     void redraw();
+
+    void clear_screen();
 
     int input();
 
@@ -34,6 +38,8 @@ private:
     WINDOW *win;
 
     void setup();
+
+    void create_screen();
 
     void tear_down();
 };

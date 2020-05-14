@@ -27,6 +27,10 @@ public:
 
     void render();
 
+    bool hit_tail(int x, int y);
+
+    bool died();
+
     std::pair<int, int> get_position();
 
 private:
@@ -34,6 +38,7 @@ private:
     std::list<std::pair<int, int>> moves;
     direction current_direction = STOP;
     ui *console;
+    bool alive = true;
 
     static constexpr char head_char = '0';
     static constexpr char tail_char = '.';
