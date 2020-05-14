@@ -19,13 +19,13 @@ public:
 
     void draw_bold(int x, int y, char c);
 
-    void draw_reversed_colors(int x, int y, char c);
-
     void print(int x, int y, std::string);
 
     void redraw();
 
     void clear_screen();
+
+    void print_game_stats(int score, int seconds_remaining);
 
     int input();
 
@@ -35,7 +35,9 @@ public:
 
 private:
     int y_max, x_max;
-    WINDOW *win;
+    int y_score_max, x_score_max;
+    WINDOW *game_screen;
+    WINDOW *score_screen;
 
     void setup();
 

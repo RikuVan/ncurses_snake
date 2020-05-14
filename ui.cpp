@@ -4,6 +4,7 @@
 
 #include <string>
 #include "ui.h"
+#include <iostream>
 
 ui::ui() {
     setup();
@@ -23,8 +24,14 @@ int ui::get_x() {
 
 void ui::setup() {
     initscr();
-    // remove cursor - doesn't always work
+    // hide the crusor - doesn't work on my mmachine
     curs_set(0);
+    // cursor is hidden, so leave it wherever
+    leaveok(stdscr, TRUE);
+    // capture keypad input
+    keypad(stdscr, TRUE);
+    // move the cursor to the top left
+    move(0, 0);;
     // this allows the program to continue loop after 200 ms wait for input
     // alternatives cbreak, nodelay, timeout
     halfdelay(2);
@@ -37,40 +44,40 @@ void ui::setup() {
 }
 
 void ui::create_screen() {
-    int side = ACS_NEQUAL;
-    int top_bottom = ACS_BLOCK;
+    int side = '#';
+    int top_bottom = '#';
     int screen_y_max, screen_x_max;
+    int x_start, y_start;
     // get screen dimensions
     // nurses weirdly does everything as y,x
     getmaxyx(stdscr, screen_y_max, screen_x_max);
     // create window in center of screen
-    win = newwin(25, 50, (screen_y_max / 2) - 10, 10);
+    game_screen = newwin(25, 50, (screen_y_max / 2) - 10, 10);
+    score_screen = newwin(5, 50, (screen_y_max / 2) - 15, 10);
     // get game area maxes
-    getmaxyx(win, y_max, x_max);
+    getmaxyx(game_screen, y_max, x_max);
+    getmaxyx(score_screen, y_score_max, x_score_max);
     // create window border
-    wborder(win, side, side, top_bottom, top_bottom, side, side, side, side);
+    wborder(game_screen, side, side, top_bottom, top_bottom, side, side, side, side);
+    wborder(score_screen, ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ');
+
     refresh();
-    wrefresh(win);
+    wrefresh(game_screen);
+    wrefresh(score_screen);
 }
 
 void ui::draw(int x, int y, char c) {
-    mvwaddch(win, y, x, c);
+    mvwaddch(game_screen, y, x, c);
 }
 
 void ui::erase(int x, int y) {
-    mvwaddch(win, y, x, ' ');
+    mvwaddch(game_screen, y, x, ' ');
 }
 
 void ui::draw_bold(int x, int y, char c) {
-    wattron(win, A_BOLD);
-    mvwaddch(win, y, x, c);
-    wattroff(win, A_BOLD);
-}
-
-void ui::draw_reversed_colors(int x, int y, char c) {
-    wattron(win, A_STANDOUT);
-    mvwaddch(win, y, x, c);
-    wattroff(win, A_STANDOUT);
+    wattron(game_screen, A_BOLD);
+    mvwaddch(game_screen, y, x, c);
+    wattroff(game_screen, A_BOLD);
 }
 
 void ui::print(int x, int y, const std::string msg) {
@@ -81,7 +88,8 @@ void ui::print(int x, int y, const std::string msg) {
 }
 
 void ui::redraw() {
-    wrefresh(win);
+    wrefresh(game_screen);
+    wrefresh(score_screen);
 }
 
 int ui::input() {
@@ -96,4 +104,13 @@ void ui::clear_screen() {
 
 void ui::tear_down() {
     endwin();
+}
+
+void ui::print_game_stats(int score, int seconds_remaining) {
+    int min = seconds_remaining / 60;
+    int sec = seconds_remaining % 60;
+    //std::string formatted = std::to_string(min) + ":" + std::to_string(sec);
+
+    print((x_score_max / 2) - 8,  y_score_max + 1, "SCORE: " + std::to_string(score));
+    print((x_score_max / 2)  + 6,  y_score_max  + 1, "TIME REMAINING: " +  std::to_string(min) + ":" + std::to_string(sec));
 }

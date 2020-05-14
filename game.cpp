@@ -52,7 +52,7 @@ void game::init() {
     curr_player->init();
     fruit.clear();
     score = 0;
-    millis = 30 * 1000;
+    millis = 60 * 2 * 1000;
 }
 
 void game::render_fruit() {
@@ -71,18 +71,20 @@ void game::loop() {
         if (died) break;
         curr_player->render();
         found_fruit();
+
+        console->print_game_stats(score, millis / 1000);
         console->redraw();
 
         // add additional fruit after a second, even if others to make it interesting
-        if (fruit.empty() || (fruit.size() < 4 && millis % 1000 == 0)) {
+        if (fruit.empty() || (fruit.size() < 4 && millis % 500 == 0)) {
             place_fruit();
         }
 
         render_fruit();
         curr_player->render();
         console->redraw();
-        usleep(25);
-        millis -= 25;
+        // this is the delay for ncurses input
+        millis -= 200;
     }
 
     end_game();
@@ -102,8 +104,8 @@ void game::end_game() {
 
     const std::string result_msg = died ? "OOPS, YOU DIED." : "GOOD JOB! YOU GOT " + std::to_string(score) + " POINTS.";
     const std::string cmd_msg = "ENTER c TO CONTINUE OR x to EXIT.";
-    console->print(x_max / 2 - 3, y_max / 2, result_msg);
-    console->print(x_max / 2 - 3, y_max / 2 - 2, cmd_msg);
+    console->print(x_max / 2 - 4, y_max / 2 - 10, result_msg);
+    console->print(x_max / 2 - 4, y_max / 2 - 9, cmd_msg);
 
     while(get_cmd() != 'x') {
         usleep(25);
