@@ -4,9 +4,32 @@
 #include "game.h"
 #include "ui.h"
 #include <list>
-#include <iostream>
 
-game::game(ui *console, std::unique_ptr<player> p) : console(console), curr_player(std::move(p)) {}
+game::game(ui *console, std::unique_ptr<player> p) noexcept  : console(console), curr_player(std::move(p)) {}
+
+game::game(game &&other) noexcept {
+    console = nullptr;
+    *console = *other.console;
+    curr_player = std::move(other.curr_player);
+    score = other.score;
+    score = other.millis;
+    fruit = other.fruit;
+    other.console = nullptr;
+    other.score = 0;
+    other.millis = 0;
+    other.fruit = {};
+}
+
+game &game::operator=(game &&other) noexcept {
+    if(this != &other) {
+        delete console;
+        score = 0;
+        millis = 0;
+        fruit = {};
+    }
+
+    return *this;
+}
 
 void game::place_fruit() {
     int x_max = console->get_x();

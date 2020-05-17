@@ -15,7 +15,7 @@ enum direction {
 
 class player {
 public:
-    player(ui *console);
+    explicit player(ui *console);
 
     void init();
 
