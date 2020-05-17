@@ -3,8 +3,6 @@
 //
 
 #include "player.h"
-#include <iostream>
-#include "game.h"
 
 player::player(ui *console) : console(console) {}
 
@@ -31,7 +29,7 @@ void player::move() {
             else alive = false;
             break;
         case DOWN:
-            if (y_loc < y_max - 1) y_loc++;
+            if (y_loc < y_max - 2) y_loc++;
             else alive = false;
             break;
         case LEFT:

@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include "player.h"
 #include "ui.h"
+#include "../db/game_db.h"
 
 class game {
 public:
@@ -31,7 +32,7 @@ private:
     ui *console;
     std::unique_ptr<player> curr_player;
     int score{0};
-    int millis{60 * 2 * 1000};
+    int millis{60 * 1000};
     std::list<std::pair<int, int>> fruit;
 
     static constexpr char fruit_char = '@';

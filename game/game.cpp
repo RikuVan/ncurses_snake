@@ -24,6 +24,9 @@ void game::place_fruit() {
     if (std::find(fruit.begin(), fruit.end(), std::pair(x, y)) == fruit.end()) {
         fruit.push_back(std::pair(x, y));
     }
+
+    auto storage = game_db::create_or_open_db();
+    storage.sync_schema();
 }
 
 struct compare_xy_pair {
@@ -52,7 +55,7 @@ void game::init() {
     curr_player->init();
     fruit.clear();
     score = 0;
-    millis = 60 * 2 * 1000;
+    millis = 60 * 1000;
 }
 
 void game::render_fruit() {
@@ -102,10 +105,24 @@ void game::end_game() {
     auto x_max = console->get_x();
     auto y_max = console->get_y();
 
+    auto storage = game_db::create_or_open_db();
+    // adjust base seconds here if you change the playing time
+    int seconds_played = 60 - (millis / 1000);
+
+    game_db::insert_game_result(storage, seconds_played, died, score);
+    auto results = game_db::get_all_results(storage);
+
     const std::string result_msg = died ? "OOPS, YOU DIED." : "GOOD JOB! YOU GOT " + std::to_string(score) + " POINTS.";
     const std::string cmd_msg = "ENTER c TO CONTINUE OR x to EXIT.";
+    const std::string stats = "TOTAL: PLAYED "
+            + std::to_string(std::get<0>(results))
+            + ", DIED " + std::to_string(std::get<1>(results))
+            + ", TIME  " + console->format_time(std::get<2>(results))
+            + ", POINTS " + std::to_string(std::get<3>(results));
+
     console->print(x_max / 2 - 4, y_max / 2 - 10, result_msg);
     console->print(x_max / 2 - 4, y_max / 2 - 9, cmd_msg);
+    console->print(x_max / 2 - 14, y_max / 2 - 8, stats);
 
     while(get_cmd() != 'x') {
         usleep(25);

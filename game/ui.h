@@ -6,6 +6,7 @@
 #define SNAKE_UI_H
 
 #include <ncurses.h>
+#include <string>
 
 class ui {
 public:
@@ -26,6 +27,8 @@ public:
     void clear_screen();
 
     void print_game_stats(int score, int seconds_remaining);
+
+    std::string  format_time(int seconds);
 
     int input();
 

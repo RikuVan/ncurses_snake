@@ -4,6 +4,7 @@
 
 #include <string>
 #include "ui.h"
+#include <string>
 #include <iostream>
 
 ui::ui() {
@@ -106,11 +107,25 @@ void ui::tear_down() {
     endwin();
 }
 
+std::string pad_string(int &num) {
+    std::string str = std::to_string(num);
+    if(2 > str.size())
+        str.insert(0, 2 - str.size(), '0');
+    return str;
+}
+
 void ui::print_game_stats(int score, int seconds_remaining) {
-    int min = seconds_remaining / 60;
+    int min = seconds_remaining  / 60;
     int sec = seconds_remaining % 60;
-    //std::string formatted = std::to_string(min) + ":" + std::to_string(sec);
+    std::string formatted = pad_string(min) + ":" + pad_string(sec);
 
     print((x_score_max / 2) - 8,  y_score_max + 1, "SCORE: " + std::to_string(score));
-    print((x_score_max / 2)  + 6,  y_score_max  + 1, "TIME REMAINING: " +  std::to_string(min) + ":" + std::to_string(sec));
+    print((x_score_max / 2)  + 6,  y_score_max  + 1, "TIME REMAINING: " +  formatted);
+}
+
+std::string ui::format_time(int seconds) {
+    int hours = seconds / 3600;
+    int min = (seconds % 3699) / 60;
+    int sec = seconds % 60;
+    return pad_string(hours) + ":" + pad_string(min) + ":" + pad_string(sec);
 }
