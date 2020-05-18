@@ -2,6 +2,7 @@
 // Created by Richard Van Camp on 11.5.2020.
 //
 
+#include <algorithm>
 #include "player.h"
 
 player::player(ui *console) : console(console) {}

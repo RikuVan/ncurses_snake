@@ -1,6 +1,7 @@
 //
 // Created by Richard Van Camp on 12.5.2020.
 //
+#include <algorithm>
 #include "game.h"
 #include "ui.h"
 #include <list>

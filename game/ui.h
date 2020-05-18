@@ -28,7 +28,7 @@ public:
 
     void print_game_stats(int score, int seconds_remaining);
 
-    std::string  format_time(int seconds);
+    std::string format_time(int seconds);
 
     int input();
 
